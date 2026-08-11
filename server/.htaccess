@@ -1,0 +1,9 @@
+# ===================================================
+# HealthBari API Subdomain (api.healthbari.com) .htaccess
+# ===================================================
+
+<IfModule mod_headers.c>
+  Header always set Access-Control-Allow-Origin "*"
+  Header always set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD"
+  Header always set Access-Control-Allow-Headers "Origin, X-Requested-With, Content-Type, Accept, Authorization, Cache-Control, Pragma"
+</IfModule>
