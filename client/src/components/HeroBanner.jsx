@@ -4,61 +4,71 @@ import { ShieldCheck, Truck, Clock, Award, ArrowRight, HeartPulse, Sparkles } fr
 export default function HeroBanner({ onExploreProducts, onOpenTips, settings }) {
   const heroBannerImage = settings?.heroBanner || '/images/healthbari_hero.png';
   const brandName = settings?.brandName || 'হেলথ বাড়ি';
+  const heroBadgeTag = settings?.heroBadgeTag || '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য';
+  const heroTitle = settings?.heroTitle !== undefined ? settings.heroTitle : 'ঘরে বসেই রাখুন পরিবারের';
+  const heroTitleHighlight = settings?.heroTitleHighlight !== undefined ? settings.heroTitleHighlight : 'স্বাস্থ্যের নিখুঁত যত্ন';
+  const heroSubtitle = settings?.heroSubtitle || `সুস্বাস্থ্য রক্ষায় সঠিক যত্নই একমাত্র সুরক্ষা। ${brandName}-এর ১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য দিয়ে খুব সহজেই নিজের ও পরিবারের হেলথ ট্র্যাক করুন।`;
 
   return (
-    <div style={{ marginBottom: '2.5rem' }}>
+    <div style={{ marginBottom: '1.5rem' }}>
       {/* Grand Hero Section */}
       <div 
+        className="hero-banner-card"
         style={{
           background: 'linear-gradient(135deg, #042f2e 0%, #0f766e 50%, #115e59 100%)',
           borderRadius: '24px',
           overflow: 'hidden',
           color: '#ffffff',
           position: 'relative',
-          boxShadow: '0 20px 40px -15px rgba(15, 118, 110, 0.45)',
-          padding: '2.5rem 2rem'
+          boxShadow: '0 20px 40px -15px rgba(15, 118, 110, 0.45)'
         }}
       >
-        <div className="grid md:grid-cols-2 items-center gap-8">
+        <div className="grid md:grid-cols-2 items-center gap-6">
           
           {/* Left Column: Headline & Value Proposition */}
           <div>
-            <div style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.45rem',
-              background: 'rgba(255, 255, 255, 0.15)',
-              backdropFilter: 'blur(8px)',
-              padding: '0.35rem 0.9rem',
-              borderRadius: '50px',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              color: '#5eead4',
-              marginBottom: '1rem',
-              border: '1px solid rgba(94, 234, 212, 0.3)'
-            }}>
-              <Sparkles size={15} />
-              <span>ডাক্তারদের অনুমোদিত ফ্যামিলি হেলথ ডিভাইস</span>
-            </div>
+            {heroBadgeTag && (
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.45rem',
+                background: 'rgba(255, 255, 255, 0.15)',
+                backdropFilter: 'blur(8px)',
+                padding: '0.3rem 0.8rem',
+                borderRadius: '50px',
+                fontSize: '0.8rem',
+                fontWeight: 600,
+                color: '#5eead4',
+                marginBottom: '0.65rem',
+                border: '1px solid rgba(94, 234, 212, 0.3)'
+              }}>
+                <Sparkles size={15} />
+                <span>{heroBadgeTag}</span>
+              </div>
+            )}
 
             <h1 style={{ 
-              fontSize: 'clamp(1.8rem, 3.5vw, 2.75rem)', 
+              fontSize: 'clamp(1.75rem, 3.5vw, 2.6rem)', 
               fontWeight: 800, 
-              lineHeight: 1.25, 
-              marginBottom: '1rem',
+              lineHeight: 1.2, 
+              marginBottom: '0.75rem',
               color: '#ffffff',
               letterSpacing: '-0.02em'
             }}>
-              ঘরে বসেই রাখুন পরিবারের <br />
-              <span style={{ color: '#5eead4', textDecoration: 'underline decoration-wavy decoration-amber-400' }}>স্বাস্থ্যের নিখুঁত যত্ন</span>
+              {heroTitle && <>{heroTitle} <br /></>}
+              {heroTitleHighlight && (
+                <span style={{ color: '#5eead4', textDecoration: 'underline decoration-wavy decoration-amber-400' }}>
+                  {heroTitleHighlight}
+                </span>
+              )}
             </h1>
 
-            <p style={{ fontSize: '1.05rem', color: '#ccfbf1', lineHeight: 1.6, marginBottom: '1.75rem', maxWidth: '520px' }}>
-              উচ্চ রক্তচাপ ও ডায়াবেটিস নিয়ন্ত্রণে নিয়মিত পরিমাপই একমাত্র সুরক্ষা। {brandName}র ১০০% অরিজিনাল মেডিকেল ডিভাইস দিয়ে খুব সহজেই নিজের ও পিতা-মাতার স্বাস্থ্য ট্র্যাক করুন।
+            <p style={{ fontSize: '0.98rem', color: '#ccfbf1', lineHeight: 1.55, marginBottom: '1.25rem', maxWidth: '520px' }}>
+              {heroSubtitle}
             </p>
 
             {/* CTAs */}
-            <div className="flex items-center gap-4 flex-wrap" style={{ marginBottom: '2rem' }}>
+            <div className="flex items-center gap-3 flex-wrap" style={{ marginBottom: '1.25rem' }}>
               <button 
                 onClick={onExploreProducts}
                 className="btn btn-large"
@@ -152,48 +162,45 @@ export default function HeroBanner({ onExploreProducts, onOpenTips, settings }) 
         </div>
       </div>
 
-      {/* 4 Feature Badges Bar */}
-      <div 
-        className="grid grid-cols-2 md:grid-cols-4 gap-4" 
-        style={{ marginTop: '1.5rem' }}
-      >
-        <div className="card" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#ffffff' }}>
-          <div style={{ width: 42, height: 42, borderRadius: '10px', background: '#f0fdfa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0d9488' }}>
-            <Award size={22} />
+      {/* 4 Feature Badges Bar (4-Grid Desktop, 2-Grid Mobile) */}
+      <div className="feature-badges-grid">
+        <div className="card" style={{ padding: '0.85rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#ffffff' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '10px', background: '#f0fdfa', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0d9488', flexShrink: 0 }}>
+            <Award size={20} />
           </div>
           <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>২ বছরের ওয়ারেন্টি</h4>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>সমস্যা হলে সরাসরি রিপ্লেসমেন্ট</p>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', margin: 0, lineHeight: 1.25 }}>২ বছরের ওয়ারেন্টি</h4>
+            <p className="hide-mobile" style={{ fontSize: '0.72rem', color: '#64748b', margin: '2px 0 0 0' }}>সমস্যা হলে সরাসরি রিপ্লেসমেন্ট</p>
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#ffffff' }}>
-          <div style={{ width: 42, height: 42, borderRadius: '10px', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669' }}>
-            <Truck size={22} />
+        <div className="card" style={{ padding: '0.85rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#ffffff' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '10px', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#059669', flexShrink: 0 }}>
+            <Truck size={20} />
           </div>
           <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>সারাদেশে হোম ডেলিভারি</h4>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>৪৮ থেকে ৭২ ঘণ্টায় কুরিয়ারে ডেলিভারি</p>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', margin: 0, lineHeight: 1.25 }}>সারাদেশে হোম ডেলিভারি</h4>
+            <p className="hide-mobile" style={{ fontSize: '0.72rem', color: '#64748b', margin: '2px 0 0 0' }}>৪৮ থেকে ৭২ ঘণ্টায় কুরিয়ারে</p>
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#ffffff' }}>
-          <div style={{ width: 42, height: 42, borderRadius: '10px', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706' }}>
-            <ShieldCheck size={22} />
+        <div className="card" style={{ padding: '0.85rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#ffffff' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '10px', background: '#fef3c7', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706', flexShrink: 0 }}>
+            <ShieldCheck size={20} />
           </div>
           <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>ক্যাশ অন ডেলিভারি</h4>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>পণ্য হাতে পেয়ে টাকা পরিশোধ করুন</p>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', margin: 0, lineHeight: 1.25 }}>ক্যাশ অন ডেলিভারি</h4>
+            <p className="hide-mobile" style={{ fontSize: '0.72rem', color: '#64748b', margin: '2px 0 0 0' }}>পণ্য হাতে পেয়ে টাকা দিন</p>
           </div>
         </div>
 
-        <div className="card" style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#ffffff' }}>
-          <div style={{ width: 42, height: 42, borderRadius: '10px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569' }}>
-            <Clock size={22} />
+        <div className="card" style={{ padding: '0.85rem 0.75rem', display: 'flex', alignItems: 'center', gap: '0.65rem', background: '#ffffff' }}>
+          <div style={{ width: 40, height: 40, borderRadius: '10px', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#475569', flexShrink: 0 }}>
+            <Clock size={20} />
           </div>
           <div>
-            <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>২৪/৭ কাস্টমার সাপোর্ট</h4>
-            <p style={{ fontSize: '0.75rem', color: '#64748b', margin: 0 }}>যেকোনো সহায়তায় কল করুন</p>
+            <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#0f172a', margin: 0, lineHeight: 1.25 }}>২৪/৭ কাস্টমার সাপোর্ট</h4>
+            <p className="hide-mobile" style={{ fontSize: '0.72rem', color: '#64748b', margin: '2px 0 0 0' }}>যেকোনো সহায়তায় কল করুন</p>
           </div>
         </div>
       </div>

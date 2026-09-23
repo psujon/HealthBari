@@ -499,5 +499,108 @@ export const api = {
         message: `"${clean}" কুপন কোডটি সঠিক নয়! ট্রাই করুন: HEALTH100`
       };
     }
+  },
+
+  // Get Customer Reviews
+  async getReviews() {
+    try {
+      const res = await fetch(`${API_BASE_URL}/reviews`);
+      const data = await res.json();
+      if (data.success && Array.isArray(data.reviews)) {
+        return data.reviews;
+      }
+      throw new Error('Invalid reviews response');
+    } catch (err) {
+      const stored = localStorage.getItem('healthbari_reviews');
+      if (stored) {
+        try { return JSON.parse(stored); } catch (e) {}
+      }
+      const initial = [
+        {
+          id: 1,
+          customerName: 'মোঃ আব্দুল জলিল',
+          customerLocation: 'কাশিমপুর, গাজীপুর',
+          productTitle: 'স্মার্ট ডিজিটাল ব্লাড প্রেশার মনিটর',
+          rating: 5,
+          comment: 'ব্লাড প্রেশার মনিটরটি খুব নিখুঁত কাজ করে। প্রেশার মাপার পর ভয়েস স্পিকারে বাংলা ও ইংরেজিতে রিডিং পড়ে শোনায়, তাই বয়স্ক আব্বার জন্য ব্যবহার করা অনেক সহজ হয়েছে। কাশিমপুরে পাওয়ার পরদিনই হাতে পেয়েছি।',
+          isVerified: true,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 2,
+          customerName: 'ডাঃ তাসনিম আলম',
+          customerLocation: 'ধানমন্ডি, ঢাকা',
+          productTitle: 'পোর্টেবল ইনহেলার ও নেবুলাইজার',
+          rating: 5,
+          comment: 'নেবুলাইজার মেশিনটি সাইজে ছোট হওয়ায় সাথে নিয়ে চলাফেরা করা সহজ। শব্দ একদমই কম হয়। হেলথ বাড়ির সার্ভিস ও প্যাকিং সত্যিই প্রশংসনীয়।',
+          isVerified: true,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 3,
+          customerName: 'শরিফুল ইসলাম',
+          customerLocation: 'উত্তরা, ঢাকা',
+          productTitle: 'ডিজিটাল পালস অক্সিমিটার',
+          rating: 5,
+          comment: 'অর্ডার করার পরদিন কুরিয়ারের মাধ্যমে হাতে পেয়েছি। আগে প্রোডাক্ট চেক করার সুযোগ ছিল তাই কোনো ভয় ছিল না। একদম ১০০% অরিজিনাল গ্যাজেট!',
+          isVerified: true,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 4,
+          customerName: 'মোসাম্মৎ রুকসানা বেগম',
+          customerLocation: 'মিরপুর, ঢাকা',
+          productTitle: 'ডিজিটাল ব্লাড গ্লুকোজ মিটার',
+          rating: 5,
+          comment: 'সুগার মাপা খুব সহজ এবং সঠিক রিডিং দেয়। স্ট্রিপগুলোর মেয়াদ অনেক দিন বাকি আছে। প্যাকেজিং ভালো ছিল।',
+          isVerified: true,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: 5,
+          customerName: 'হাসান মাহমুদ',
+          customerLocation: 'চকবাজার, চট্টগ্রাম',
+          productTitle: 'মাল্টি-ফাংশনাল মাসল ম্যাসাজার গান',
+          rating: 5,
+          comment: 'প্রতিদিনের ঘাড় ও পিঠের ব্যথার জন্য অসম্ভব উপকারী একটি ডিভাইস। ডিসকাউন্ট কুপন ব্যবহার করে ১-ক্লিকে অর্ডার করেছি, খুব দ্রুত ডেলিভারি পেয়েছি।',
+          isVerified: true,
+          createdAt: new Date().toISOString()
+        }
+      ];
+      localStorage.setItem('healthbari_reviews', JSON.stringify(initial));
+      return initial;
+    }
+  },
+
+  // Submit Customer Review
+  async createReview(reviewData) {
+    try {
+      const res = await fetch(`${API_BASE_URL}/reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(reviewData)
+      });
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      const stored = localStorage.getItem('healthbari_reviews');
+      let current = [];
+      if (stored) {
+        try { current = JSON.parse(stored); } catch (e) {}
+      }
+      const newRev = {
+        id: Date.now(),
+        customerName: reviewData.customerName || 'সম্মানিত কাস্টমার',
+        customerLocation: reviewData.customerLocation || 'ঢাকা, বাংলাদেশ',
+        productTitle: reviewData.productTitle || 'স্বাস্থ্য সুরক্ষা প্রোডাক্ট',
+        rating: Number(reviewData.rating) || 5,
+        comment: reviewData.comment || '',
+        isVerified: true,
+        createdAt: new Date().toISOString()
+      };
+      current.unshift(newRev);
+      localStorage.setItem('healthbari_reviews', JSON.stringify(current));
+      return { success: true, message: 'আপনার মূল্যবান রিভিউটি সফলভাবে গৃহীত হয়েছে। ধন্যবাদ!', review: newRev };
+    }
   }
 };

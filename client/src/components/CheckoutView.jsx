@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingBag, Tag, Check, Truck, ShieldCheck, ArrowLeft, Zap, X } from 'lucide-react';
 import { api } from '../services/api';
 
 export default function CheckoutView({ cartItems, onUpdateQty, onRemoveItem, onPlaceOrder, onBackToShop, settings }) {
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, []);
+
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [address, setAddress] = useState('');

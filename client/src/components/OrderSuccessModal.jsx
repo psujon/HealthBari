@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Printer, MessageSquare, ArrowRight, Truck, FileText, Download, ShieldCheck } from 'lucide-react';
+import { CheckCircle, Printer, MessageSquare, ArrowRight, Truck, FileText, Download, ShieldCheck, Star, Send, PenTool } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import CustomerInvoiceModal from './CustomerInvoiceModal';
+import { api } from '../services/api';
 
 export default function OrderSuccessModal({ order, settings, onClose }) {
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState('');
+  const [reviewSubmitting, setReviewSubmitting] = useState(false);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
 
   if (!order) return null;
 
@@ -52,6 +57,30 @@ export default function OrderSuccessModal({ order, settings, onClose }) {
   const discountAmount = order?.discountAmount || 0;
   const couponCode = order?.couponCode || null;
   const whatsappNumber = settings?.whatsappNumber || '8801540696573';
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!reviewComment.trim()) return;
+    setReviewSubmitting(true);
+    try {
+      const firstItemTitle = items[0]?.title || items[0]?.name || 'হেলথ বাড়ি প্রোডাক্ট';
+      const res = await api.createReview({
+        customerName: customerName,
+        customerLocation: customerAddress,
+        productTitle: firstItemTitle,
+        rating: reviewRating,
+        comment: reviewComment.trim()
+      });
+      if (res && res.success) {
+        setReviewSubmitted(true);
+      }
+    } catch (err) {
+      console.log('Error submitting review:', err);
+      setReviewSubmitted(true);
+    } finally {
+      setReviewSubmitting(false);
+    }
+  };
 
   return (
     <>
@@ -148,6 +177,67 @@ export default function OrderSuccessModal({ order, settings, onClose }) {
                 <span>সর্বমোট প্রদেয় টাকা:</span>
                 <span className="font-numeric" style={{ color: '#059669' }}>{grandTotal}৳</span>
               </div>
+            </div>
+
+            {/* Customer Review Section on Success Modal */}
+            <div className="no-print" style={{ background: '#ffffff', border: '1.5px solid #ccfbf1', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.25rem', textAlign: 'left', boxShadow: '0 4px 12px rgba(13, 148, 136, 0.06)' }}>
+              <div className="flex items-center gap-2" style={{ marginBottom: '0.35rem', color: '#0f172a', fontWeight: 800, fontSize: '0.95rem' }}>
+                <PenTool size={18} color="#0d9488" />
+                <span>⭐ আপনার অভিজ্ঞতা ও কাস্টমার রিভিউ দিন</span>
+              </div>
+              <p style={{ fontSize: '0.82rem', color: '#64748b', margin: '0 0 0.85rem 0' }}>
+                আমাদের সেবা বা প্রোডাক্ট সম্পর্কে আপনার অনুভূতি শেয়ার করুন।
+              </p>
+
+              {reviewSubmitted ? (
+                <div style={{ background: '#ecfdf5', border: '1px solid #a7f3d0', padding: '0.85rem 1rem', borderRadius: '8px', color: '#047857', fontWeight: 700, fontSize: '0.88rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <CheckCircle size={20} color="#059669" />
+                  <span>🎉 আপনার মূল্যবান রিভিউটি প্রকাশ করা হয়েছে। হেলথ বাড়ির সাথে থাকার জন্য ধন্যবাদ!</span>
+                </div>
+              ) : (
+                <form onSubmit={handleReviewSubmit}>
+                  <div className="flex items-center gap-1" style={{ marginBottom: '0.75rem' }}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewRating(star)}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px' }}
+                      >
+                        <Star
+                          size={24}
+                          fill={star <= reviewRating ? "#f59e0b" : "#cbd5e1"}
+                          color={star <= reviewRating ? "#f59e0b" : "#cbd5e1"}
+                        />
+                      </button>
+                    ))}
+                    <span style={{ fontSize: '0.82rem', color: '#d97706', fontWeight: 700, marginLeft: '6px' }}>
+                      ({reviewRating} Star)
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2" style={{ flexWrap: 'wrap' }}>
+                    <input
+                      type="text"
+                      required
+                      placeholder="আপনার অনুভূতি লিখুন (যেমন: দ্রুত ডেলিভারি ও চমৎকার সার্ভিস)..."
+                      value={reviewComment}
+                      onChange={(e) => setReviewComment(e.target.value)}
+                      className="form-control"
+                      style={{ flex: '1 1 240px', padding: '0.55rem 0.75rem', borderRadius: '8px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
+                    />
+                    <button
+                      type="submit"
+                      disabled={reviewSubmitting}
+                      className="btn btn-buy-now"
+                      style={{ padding: '0.55rem 1.15rem', fontSize: '0.82rem', fontWeight: 800, whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: '5px' }}
+                    >
+                      <Send size={14} />
+                      <span>{reviewSubmitting ? 'জমা হচ্ছে...' : 'রিভিউ সাবমিট করুন'}</span>
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
 
             {/* Warranty & Delivery Note */}

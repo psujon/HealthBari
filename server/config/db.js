@@ -172,6 +172,10 @@ export const initMySQL = async () => {
         \`announcements\` TEXT,
         \`announcement_speed\` VARCHAR(20) DEFAULT 'normal',
         \`is_announcement_enabled\` BOOLEAN DEFAULT TRUE,
+        \`hero_badge_tag\` VARCHAR(255) DEFAULT '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য',
+        \`hero_title\` VARCHAR(255) DEFAULT 'ঘরে বসেই রাখুন পরিবারের',
+        \`hero_title_highlight\` VARCHAR(255) DEFAULT 'স্বাস্থ্যের নিখুঁত যত্ন',
+        \`hero_subtitle\` TEXT,
         \`updated_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
@@ -186,6 +190,18 @@ export const initMySQL = async () => {
     try {
       await pool.query('ALTER TABLE `site_settings` ADD COLUMN `is_announcement_enabled` BOOLEAN DEFAULT TRUE');
     } catch (e) { }
+    try {
+      await pool.query('ALTER TABLE `site_settings` ADD COLUMN `hero_badge_tag` VARCHAR(255) DEFAULT "১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য"');
+    } catch (e) { }
+    try {
+      await pool.query('ALTER TABLE `site_settings` ADD COLUMN `hero_title` VARCHAR(255) DEFAULT "ঘরে বসেই রাখুন পরিবারের"');
+    } catch (e) { }
+    try {
+      await pool.query('ALTER TABLE `site_settings` ADD COLUMN `hero_title_highlight` VARCHAR(255) DEFAULT "স্বাস্থ্যের নিখুঁত যত্ন"');
+    } catch (e) { }
+    try {
+      await pool.query('ALTER TABLE `site_settings` ADD COLUMN `hero_subtitle` TEXT');
+    } catch (e) { }
 
     // Ensure baseline settings row exists
     const defaultAnnouncements = JSON.stringify([
@@ -197,9 +213,35 @@ export const initMySQL = async () => {
     ]);
 
     await pool.query(`
-      INSERT IGNORE INTO \`site_settings\` (id, brand_name, brand_logo, hero_banner, phone, whatsapp_number, address, slogan, facebook_url, shipping_inside_dhaka, shipping_outside_dhaka, announcements, announcement_speed, is_announcement_enabled)
-      VALUES ('default', 'হেলথ বাড়ি', '/images/healthbari_logo.png', '/images/healthbari_hero_banner.png', '01540-696573', '8801540696573', 'কাশিমপুর, গাজীপুর', 'আপনার পরিবারের বিশ্বস্ত ডিজিটাল স্বাস্থ্য সঙ্গী', 'https://facebook.com/healthbari', 0, 0, ?, 'normal', 1);
+      INSERT IGNORE INTO \`site_settings\` (id, brand_name, brand_logo, hero_banner, phone, whatsapp_number, address, slogan, facebook_url, shipping_inside_dhaka, shipping_outside_dhaka, announcements, announcement_speed, is_announcement_enabled, hero_badge_tag, hero_title, hero_title_highlight, hero_subtitle)
+      VALUES ('default', 'হেলথ বাড়ি', '/images/healthbari_logo.png', '/images/healthbari_hero_banner.png', '01540-696573', '8801540696573', 'কাশিমপুর, গাজীপুর', 'আপনার পরিবারের বিশ্বস্ত ডিজিটাল স্বাস্থ্য সঙ্গী', 'https://facebook.com/healthbari', 0, 0, ?, 'normal', 1, '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য', 'ঘরে বসেই রাখুন পরিবারের', 'স্বাস্থ্যের নিখুঁত যত্ন', 'সুস্বাস্থ্য রক্ষায় সঠিক যত্নই একমাত্র সুরক্ষা। হেলথ বাড়ি-এর ১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য দিয়ে খুব সহজেই নিজের ও পরিবারের হেলথ ট্র্যাক করুন।');
     `, [defaultAnnouncements]);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS \`reviews\` (
+        \`id\` INT AUTO_INCREMENT PRIMARY KEY,
+        \`customer_name\` VARCHAR(255) NOT NULL,
+        \`customer_location\` VARCHAR(255) DEFAULT 'ঢাকা, বাংলাদেশ',
+        \`product_title\` VARCHAR(255) DEFAULT 'স্বাস্থ্য সুরক্ষা প্রোডাক্ট',
+        \`rating\` INT DEFAULT 5,
+        \`comment\` TEXT NOT NULL,
+        \`is_verified\` TINYINT(1) DEFAULT 1,
+        \`created_at\` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // Seed initial reviews if table is empty
+    const [revRows] = await pool.query('SELECT COUNT(*) as cnt FROM `reviews`');
+    if (revRows[0].cnt === 0) {
+      await pool.query(`
+        INSERT INTO \`reviews\` (customer_name, customer_location, product_title, rating, comment, is_verified) VALUES
+        ('মোঃ আব্দুল জলিল', 'কাশিমপুর, গাজীপুর', 'স্মার্ট ডিজিটাল ব্লাড প্রেশার মনিটর', 5, 'ব্লাড প্রেশার মনিটরটি খুব নিখুঁত কাজ করে। প্রেশার মাপার পর ভয়েস স্পিকারে বাংলা ও ইংরেজিতে রিডিং পড়ে শোনায়, তাই বয়স্ক আব্বার জন্য ব্যবহার করা অনেক সহজ হয়েছে। কাশিমপুরে পাওয়ার পরদিনই হাতে পেয়েছি।', 1),
+        ('ডাঃ তাসনিম আলম', 'ধানমন্ডি, ঢাকা', 'পোর্টেবল ইনহেলার ও নেবুলাইজার', 5, 'নেবুলাইজার মেশিনটি সাইজে ছোট হওয়ায় সাথে নিয়ে চলাফেরা করা সহজ। শব্দ একদমই কম হয়। হেলথ বাড়ির সার্ভিস ও প্যাকিং সত্যিই প্রশংসনীয়।', 1),
+        ('শরিফুল ইসলাম', 'উত্তরা, ঢাকা', 'ডিজিটাল পালস অক্সিমিটার', 5, 'অর্ডার করার পরদিন কুরিয়ারের মাধ্যমে হাতে পেয়েছি। আগে প্রোডাক্ট চেক করার সুযোগ ছিল তাই কোনো ভয় ছিল না। একদম ১০০% অরিজিনাল গ্যাজেট!', 1),
+        ('মোসাম্মৎ রুকসানা বেগম', 'মিরপুর, ঢাকা', 'ডিজিটাল ব্লাড গ্লুকোজ মিটার', 5, 'সুগার মাপা খুব সহজ এবং সঠিক রিডিং দেয়। স্ট্রিপগুলোর মেয়াদ অনেক দিন বাকি আছে। প্যাকেজিং ভালো ছিল।', 1),
+        ('হাসান মাহমুদ', 'চকবাজার, চট্টগ্রাম', 'মাল্টি-ফাংশনাল মাসল ম্যাসাজার গান', 5, 'প্রতিদিনের ঘাড় ও পিঠের ব্যথার জন্য অসম্ভব উপকারী একটি ডিভাইস। ডিসকাউন্ট কুপন ব্যবহার করে ১-ক্লিকে অর্ডার করেছি, খুব দ্রুত ডেলিভারি পেয়েছি।', 1);
+      `);
+    }
 
     await pool.query(`
       CREATE TABLE IF NOT EXISTS \`admins\` (

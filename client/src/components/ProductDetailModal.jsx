@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { 
-  X, Star, ShoppingCart, Zap, ShieldCheck, Truck, RotateCcw, 
+import {
+  X, Star, ShoppingCart, Zap, ShieldCheck, Truck, RotateCcw,
   HelpCircle, CheckCircle2, ChevronRight, PhoneCall, Sparkles, HeartPulse
 } from 'lucide-react';
 import OneClickOrderForm from './OneClickOrderForm';
 
-export default function ProductDetailModal({ 
-  product, 
-  onClose, 
-  onAddToCart, 
-  onDirectOrder, 
+export default function ProductDetailModal({
+  product,
+  onClose,
+  onAddToCart,
+  onDirectOrder,
   onQuickBuy,
-  allProducts, 
-  onSelectProduct 
+  allProducts,
+  onSelectProduct
 }) {
   if (!product) return null;
 
@@ -38,13 +38,13 @@ export default function ProductDetailModal({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div 
-        className="modal-content" 
+      <div
+        className="modal-content"
         onClick={(e) => e.stopPropagation()}
         style={{ maxWidth: '1000px', position: 'relative', padding: '1.5rem 1.75rem' }}
       >
         {/* Close Button */}
-        <button 
+        <button
           onClick={onClose}
           style={{
             position: 'absolute',
@@ -67,7 +67,7 @@ export default function ProductDetailModal({
 
         {/* 2-Column Product Showcase (Matching User's Screenshot) */}
         <div className="grid md:grid-cols-2 gap-8" style={{ marginBottom: '2rem' }}>
-          
+
           {/* Left Column: Image Gallery & Thumbnails */}
           <div>
             <div style={{
@@ -80,8 +80,8 @@ export default function ProductDetailModal({
               overflow: 'hidden',
               marginBottom: '1rem'
             }}>
-              <img 
-                src={product.images[selectedImageIndex] || product.images[0]} 
+              <img
+                src={product.images[selectedImageIndex] || product.images[0]}
                 alt={product.title}
                 style={{
                   maxWidth: '100%',
@@ -91,7 +91,7 @@ export default function ProductDetailModal({
                   margin: '0 auto'
                 }}
               />
-              
+
               {/* Pagination 1/2 Indicator */}
               <div style={{
                 position: 'absolute',
@@ -112,7 +112,7 @@ export default function ProductDetailModal({
             {/* Thumbnails Row */}
             <div className="flex items-center gap-3">
               {product.images.map((img, idx) => (
-                <div 
+                <div
                   key={idx}
                   onClick={() => setSelectedImageIndex(idx)}
                   style={{
@@ -225,7 +225,7 @@ export default function ProductDetailModal({
 
             {/* Main Action CTAs (Matching Exact Colors in Screenshot) */}
             <div className="flex flex-col gap-2" style={{ marginBottom: '1.25rem' }}>
-              <button 
+              <button
                 onClick={() => onAddToCart(product, selectedVariant, quantity)}
                 className="btn btn-large"
                 style={{
@@ -239,7 +239,7 @@ export default function ProductDetailModal({
                 <span>Add to Cart</span>
               </button>
 
-              <button 
+              <button
                 onClick={() => {
                   onClose();
                   onQuickBuy(product, selectedVariant, quantity);
@@ -253,7 +253,7 @@ export default function ProductDetailModal({
                 }}
               >
                 <Zap size={18} />
-                <span>⚡ Buy Now (সরাসরি ১-ক্লিক অর্ডার)</span>
+                <span>Buy Now</span>
               </button>
             </div>
 
@@ -279,9 +279,9 @@ export default function ProductDetailModal({
 
         {/* Description & Health Instructions Section (Matching Screenshot) */}
         <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '1.5rem', marginBottom: '2rem' }}>
-          
+
           <div className="flex items-center gap-4" style={{ marginBottom: '1rem', borderBottom: '1px solid #f1f5f9', paddingBottom: '0.5rem' }}>
-            <button 
+            <button
               onClick={() => setActiveTab('description')}
               style={{
                 background: 'none',
@@ -296,7 +296,7 @@ export default function ProductDetailModal({
             >
               📋 Description (বিস্তারিত বিবরণ)
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('guide')}
               style={{
                 background: 'none',
@@ -358,7 +358,7 @@ export default function ProductDetailModal({
 
         {/* Embedded One-Click Order Form directly on the product modal for instant conversion! */}
         <div style={{ marginBottom: '2.5rem' }}>
-          <OneClickOrderForm 
+          <OneClickOrderForm
             product={product}
             variant={selectedVariant}
             quantity={quantity}
@@ -380,13 +380,13 @@ export default function ProductDetailModal({
               {relatedProducts.map((rel) => {
                 const relVar = rel.variants[0];
                 return (
-                  <div 
+                  <div
                     key={rel.id}
                     className="card"
                     style={{ padding: '1rem', display: 'flex', alignItems: 'center', gap: '1rem' }}
                   >
-                    <img 
-                      src={rel.images[0]} 
+                    <img
+                      src={rel.images[0]}
                       alt={rel.title}
                       style={{ width: 80, height: 80, objectFit: 'contain', background: '#f8fafc', borderRadius: '8px', padding: '4px' }}
                     />
@@ -397,7 +397,7 @@ export default function ProductDetailModal({
                       <div style={{ fontSize: '1rem', fontWeight: 800, color: '#0f766e', marginBottom: '0.5rem' }} className="font-numeric">
                         {relVar.price}৳
                       </div>
-                      <button 
+                      <button
                         onClick={() => onSelectProduct(rel)}
                         className="btn btn-outline"
                         style={{ padding: '0.35rem 0.75rem', fontSize: '0.75rem', background: '#0284c7', color: '#ffffff', borderColor: '#0284c7' }}

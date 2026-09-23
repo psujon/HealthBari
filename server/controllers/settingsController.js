@@ -21,7 +21,11 @@ let localSettings = {
   shippingOutsideDhaka: 0,
   announcements: defaultAnnouncements,
   announcementSpeed: 'normal',
-  isAnnouncementEnabled: true
+  isAnnouncementEnabled: true,
+  heroBadgeTag: '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য',
+  heroTitle: 'ঘরে বসেই রাখুন পরিবারের',
+  heroTitleHighlight: 'স্বাস্থ্যের নিখুঁত যত্ন',
+  heroSubtitle: 'সুস্বাস্থ্য রক্ষায় সঠিক যত্নই একমাত্র সুরক্ষা। হেলথ বাড়ি-এর ১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য দিয়ে খুব সহজেই নিজের ও পরিবারের হেলথ ট্র্যাক করুন।'
 };
 
 export const getSettings = async (req, res) => {
@@ -53,7 +57,11 @@ export const getSettings = async (req, res) => {
           shippingOutsideDhaka: (s.shipping_outside_dhaka !== null && s.shipping_outside_dhaka !== undefined && !isNaN(Number(s.shipping_outside_dhaka))) ? Number(s.shipping_outside_dhaka) : 0,
           announcements: Array.isArray(parsedAnnouncements) ? parsedAnnouncements : defaultAnnouncements,
           announcementSpeed: s.announcement_speed || 'normal',
-          isAnnouncementEnabled: s.is_announcement_enabled !== undefined ? Boolean(s.is_announcement_enabled) : true
+          isAnnouncementEnabled: s.is_announcement_enabled !== undefined ? Boolean(s.is_announcement_enabled) : true,
+          heroBadgeTag: s.hero_badge_tag || '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য',
+          heroTitle: s.hero_title !== undefined ? s.hero_title : 'ঘরে বসেই রাখুন পরিবারের',
+          heroTitleHighlight: s.hero_title_highlight !== undefined ? s.hero_title_highlight : 'স্বাস্থ্যের নিখুঁত যত্ন',
+          heroSubtitle: s.hero_subtitle || 'সুস্বাস্থ্য রক্ষায় সঠিক যত্নই একমাত্র সুরক্ষা। হেলথ বাড়ি-এর ১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য দিয়ে খুব সহজেই নিজের ও পরিবারের হেলথ ট্র্যাক করুন।'
         };
         return res.json({ success: true, settings: formatted });
       }
@@ -79,7 +87,11 @@ export const updateSettings = async (req, res) => {
       shippingOutsideDhaka,
       announcements,
       announcementSpeed,
-      isAnnouncementEnabled
+      isAnnouncementEnabled,
+      heroBadgeTag,
+      heroTitle,
+      heroTitleHighlight,
+      heroSubtitle
     } = req.body;
 
     const insideCharge = (shippingInsideDhaka !== undefined && shippingInsideDhaka !== null && shippingInsideDhaka !== '' && !isNaN(Number(shippingInsideDhaka)))
@@ -102,11 +114,16 @@ export const updateSettings = async (req, res) => {
 
     const announcementsJson = JSON.stringify(announcementsArray);
 
+    const finalBadgeTag = heroBadgeTag || '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য';
+    const finalTitle = heroTitle !== undefined ? heroTitle : 'ঘরে বসেই রাখুন পরিবারের';
+    const finalTitleHighlight = heroTitleHighlight !== undefined ? heroTitleHighlight : 'স্বাস্থ্যের নিখুঁত যত্ন';
+    const finalSubtitle = heroSubtitle || 'সুস্বাস্থ্য রক্ষায় সঠিক যত্নই একমাত্র সুরক্ষা। হেলথ বাড়ি-এর ১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য দিয়ে খুব সহজেই নিজের ও পরিবারের হেলথ ট্র্যাক করুন।';
+
     const pool = getPool();
     if (isDbConnected() && pool) {
       await pool.query(
-        `INSERT INTO site_settings (id, brand_name, brand_logo, hero_banner, phone, whatsapp_number, address, slogan, facebook_url, shipping_inside_dhaka, shipping_outside_dhaka, announcements, announcement_speed, is_announcement_enabled)
-         VALUES ('default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `INSERT INTO site_settings (id, brand_name, brand_logo, hero_banner, phone, whatsapp_number, address, slogan, facebook_url, shipping_inside_dhaka, shipping_outside_dhaka, announcements, announcement_speed, is_announcement_enabled, hero_badge_tag, hero_title, hero_title_highlight, hero_subtitle)
+         VALUES ('default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
          ON DUPLICATE KEY UPDATE
            brand_name = VALUES(brand_name),
            brand_logo = VALUES(brand_logo),
@@ -120,7 +137,11 @@ export const updateSettings = async (req, res) => {
            shipping_outside_dhaka = VALUES(shipping_outside_dhaka),
            announcements = VALUES(announcements),
            announcement_speed = VALUES(announcement_speed),
-           is_announcement_enabled = VALUES(is_announcement_enabled)`,
+           is_announcement_enabled = VALUES(is_announcement_enabled),
+           hero_badge_tag = VALUES(hero_badge_tag),
+           hero_title = VALUES(hero_title),
+           hero_title_highlight = VALUES(hero_title_highlight),
+           hero_subtitle = VALUES(hero_subtitle)`,
         [
           brandName || 'হেলথ বাড়ি',
           brandLogo || '/images/healthbari_logo.png',
@@ -134,7 +155,11 @@ export const updateSettings = async (req, res) => {
           outsideCharge,
           announcementsJson,
           announcementSpeed || 'normal',
-          isAnnouncementEnabled !== undefined ? (isAnnouncementEnabled ? 1 : 0) : 1
+          isAnnouncementEnabled !== undefined ? (isAnnouncementEnabled ? 1 : 0) : 1,
+          finalBadgeTag,
+          finalTitle,
+          finalTitleHighlight,
+          finalSubtitle
         ]
       );
 
@@ -151,7 +176,11 @@ export const updateSettings = async (req, res) => {
         shippingOutsideDhaka: outsideCharge,
         announcements: announcementsArray,
         announcementSpeed: announcementSpeed || 'normal',
-        isAnnouncementEnabled: isAnnouncementEnabled !== undefined ? Boolean(isAnnouncementEnabled) : true
+        isAnnouncementEnabled: isAnnouncementEnabled !== undefined ? Boolean(isAnnouncementEnabled) : true,
+        heroBadgeTag: finalBadgeTag,
+        heroTitle: finalTitle,
+        heroTitleHighlight: finalTitleHighlight,
+        heroSubtitle: finalSubtitle
       };
 
       return res.json({
@@ -175,7 +204,11 @@ export const updateSettings = async (req, res) => {
       shippingOutsideDhaka: outsideCharge,
       announcements: announcementsArray,
       announcementSpeed: announcementSpeed || 'normal',
-      isAnnouncementEnabled: isAnnouncementEnabled !== undefined ? Boolean(isAnnouncementEnabled) : true
+      isAnnouncementEnabled: isAnnouncementEnabled !== undefined ? Boolean(isAnnouncementEnabled) : true,
+      heroBadgeTag: finalBadgeTag,
+      heroTitle: finalTitle,
+      heroTitleHighlight: finalTitleHighlight,
+      heroSubtitle: finalSubtitle
     };
 
     res.json({

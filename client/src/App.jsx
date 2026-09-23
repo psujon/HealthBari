@@ -9,6 +9,7 @@ import ProductDetailModal from './components/ProductDetailModal';
 import CheckoutView from './components/CheckoutView';
 import OrderSuccessModal from './components/OrderSuccessModal';
 import HealthTipsSection from './components/HealthTipsSection';
+import CustomerReviewsSection from './components/CustomerReviewsSection';
 import TrackParcelView from './components/TrackParcelView';
 import CartDrawer from './components/CartDrawer';
 import AdminLogin from './components/AdminLogin';
@@ -54,7 +55,7 @@ export default function App() {
   const [articlesList, setArticlesList] = useState(initialArticlesData);
   const [siteSettings, setSiteSettings] = useState(() => {
     const defaultAnnouncements = [
-      "🩺 সকল মেডিকেল ডিভাইসে অফিশিয়াল ওয়ারেন্টি ও সারাদেশে ক্যাশ অন ডেলিভারি",
+      "🩺 সকল অরিজিনাল স্বাস্থ্য, হারবাল ও মেডিকেল পণ্যে সারাদেশে ক্যাশ অন ডেলিভারি",
       "🎟️ বিশেষ ছাড়: 'HEALTH100' কুপন কোড ব্যবহার করে পান ১০০৳ নিশ্চিত ছাড়!",
       "🚚 কাশিমপুর (গাজীপুর) এরিয়াতে দ্রুততম হোম ডেলিভারি ও ফ্রি চেকআপ সুবিধা",
       "🎁 'HEALTH10' কোড ব্যবহারে পেয়ে যান যেকোনো অর্ডারে ১০% ইনস্ট্যান্ট ডিসকাউন্ট!",
@@ -126,7 +127,7 @@ export default function App() {
             return parsed;
           }
         }
-      } catch (e) {}
+      } catch (e) { }
     }
     return [];
   });
@@ -136,11 +137,12 @@ export default function App() {
     if (typeof window !== 'undefined') {
       try {
         localStorage.setItem('healthbari_orders', JSON.stringify(orders));
-      } catch (e) {}
+      } catch (e) { }
     }
   }, [orders]);
 
   const [completedOrder, setCompletedOrder] = useState(null);
+  const [reviewsList, setReviewsList] = useState([]);
 
   // Load products, categories, articles, settings & orders from DB on mount
   useEffect(() => {
@@ -164,6 +166,10 @@ export default function App() {
       const fetchedOrders = await api.getOrders();
       if (fetchedOrders && Array.isArray(fetchedOrders)) {
         setOrders(fetchedOrders);
+      }
+      const fetchedReviews = await api.getReviews();
+      if (fetchedReviews && Array.isArray(fetchedReviews)) {
+        setReviewsList(fetchedReviews);
       }
     }
     loadData();
@@ -196,6 +202,7 @@ export default function App() {
   // Update browser URL on tab change
   const handleTabChange = (tab) => {
     setCurrentTab(tab);
+    window.scrollTo({ top: 0, behavior: 'instant' });
     if (tab === 'admin') {
       if (!window.location.pathname.includes('/admindashboard')) {
         window.history.pushState({}, '', '/admindashboard');
@@ -285,7 +292,8 @@ export default function App() {
       { product, variant, quantity: qty }
     ]);
     setSelectedProduct(null);
-    setCurrentTab('checkout');
+    handleTabChange('checkout');
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   // Place order with Database integration
@@ -343,7 +351,7 @@ export default function App() {
       ...productData,
       variants: [{ id: 'v-' + Date.now(), name: 'স্ট্যান্ডার্ড প্যাকেজ', price: productData.price, isDefault: true }],
       images: ['/images/bp_monitor.png'],
-      highlights: ['১০০% অরিজিনাল মেডিকেল ডিভাইস'],
+      highlights: ['১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য'],
       rating: 4.9,
       reviewsCount: 1,
       stockCount: productData.stockCount || 50
@@ -575,7 +583,7 @@ export default function App() {
                     gap: '0.5rem'
                   }}
                 >
-                  <span>সকল ডিভাইস</span>
+                  <span>সকল প্রোডাক্ট</span>
                   <span style={{
                     background: selectedCategory === 'all' ? '#0d9488' : '#f1f5f9',
                     color: selectedCategory === 'all' ? '#ffffff' : '#64748b',
@@ -651,7 +659,7 @@ export default function App() {
                       cursor: 'pointer'
                     }}
                   >
-                    <option value="all">সকল ডিভাইস ({productsList.length})</option>
+                    <option value="all">সকল প্রোডাক্ট ({productsList.length})</option>
                     {categoriesList.map((cat) => {
                       const count = productsList.filter(p => p.category === cat.name || p.categorySlug === cat.slug).length;
                       return (
@@ -669,7 +677,7 @@ export default function App() {
             <div id="products-grid-section" style={{ marginBottom: '3.5rem' }}>
               <div className="flex items-center justify-between" style={{ marginBottom: '1.25rem' }}>
                 <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  All Products (সকল মেডিকেল ডিভাইস)
+                  All Products
                 </h2>
                 <button
                   onClick={() => handleTabChange('products')}
@@ -681,7 +689,7 @@ export default function App() {
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="products-2-grid">
                 {filteredProducts.map((p) => (
                   <ProductCard
                     key={p.id}
@@ -700,6 +708,12 @@ export default function App() {
               onSelectProduct={(prod) => setSelectedProduct(prod)}
             />
 
+            {/* Customer Reviews Section */}
+            <CustomerReviewsSection
+              reviews={reviewsList}
+              onReviewSubmitted={(newRev) => setReviewsList(prev => [newRev, ...prev])}
+            />
+
           </div>
         )}
 
@@ -710,7 +724,7 @@ export default function App() {
             <div className="flex items-center justify-between gap-4 flex-wrap" style={{ marginBottom: '2rem', borderBottom: '1px solid #e2e8f0', paddingBottom: '1rem' }}>
               <div>
                 <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
-                  সকল স্বাস্থ্য পণ্য ও ডিভাইস
+                  সকল স্বাস্থ্য সম্মত প্রোডাক্ট
                 </h1>
                 <p style={{ color: '#64748b', margin: '4px 0 0 0', fontSize: '0.875rem' }}>
                   ডাক্তারদের রিকমেন্ডেড ও ১০০% কোয়ালিটি টেস্টেড মেডিকেল গ্যাজেট
@@ -748,7 +762,7 @@ export default function App() {
                   cursor: 'pointer'
                 }}
               >
-                সকল ডিভাইস ({productsList.length})
+                সকল প্রোডাক্ট ({productsList.length})
               </button>
 
               {categoriesList.map((cat) => {
@@ -803,7 +817,7 @@ export default function App() {
                     cursor: 'pointer'
                   }}
                 >
-                  <option value="all">সকল ডিভাইস ({productsList.length})</option>
+                  <option value="all">সকল প্রোডাক্ট ({productsList.length})</option>
                   {categoriesList.map((cat) => {
                     const count = productsList.filter(p => p.category === cat.name || p.categorySlug === cat.slug).length;
                     return (
@@ -817,7 +831,7 @@ export default function App() {
             </div>
 
             {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="products-2-grid">
               {filteredProducts.map((p) => (
                 <ProductCard
                   key={p.id}

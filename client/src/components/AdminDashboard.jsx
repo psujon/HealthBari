@@ -336,6 +336,12 @@ export default function AdminDashboard({
     settings?.shippingOutsideDhaka !== undefined && settings?.shippingOutsideDhaka !== null ? settings.shippingOutsideDhaka : 0
   );
 
+  // 🖼️ Hero Banner Text Content state
+  const [profHeroBadgeTag, setProfHeroBadgeTag] = useState(settings?.heroBadgeTag || '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য');
+  const [profHeroTitle, setProfHeroTitle] = useState(settings?.heroTitle !== undefined ? settings.heroTitle : 'ঘরে বসেই রাখুন পরিবারের');
+  const [profHeroTitleHighlight, setProfHeroTitleHighlight] = useState(settings?.heroTitleHighlight !== undefined ? settings.heroTitleHighlight : 'স্বাস্থ্যের নিখুঁত যত্ন');
+  const [profHeroSubtitle, setProfHeroSubtitle] = useState(settings?.heroSubtitle || 'সুস্বাস্থ্য রক্ষায় সঠিক যত্নই একমাত্র সুরক্ষা। হেলথ বাড়ি-এর ১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য দিয়ে খুব সহজেই নিজের ও পরিবারের হেলথ ট্র্যাক করুন।');
+
   // Topbar Moving Announcements state
   const [profAnnouncements, setProfAnnouncements] = useState(() => {
     if (settings?.announcements && Array.isArray(settings.announcements) && settings.announcements.length > 0) {
@@ -440,6 +446,10 @@ export default function AdminDashboard({
       if (settings.isAnnouncementEnabled !== undefined) {
         setProfIsAnnouncementEnabled(settings.isAnnouncementEnabled);
       }
+      if (settings.heroBadgeTag !== undefined) setProfHeroBadgeTag(settings.heroBadgeTag);
+      if (settings.heroTitle !== undefined) setProfHeroTitle(settings.heroTitle);
+      if (settings.heroTitleHighlight !== undefined) setProfHeroTitleHighlight(settings.heroTitleHighlight);
+      if (settings.heroSubtitle !== undefined) setProfHeroSubtitle(settings.heroSubtitle);
     }
   }, [settings]);
 
@@ -510,7 +520,11 @@ export default function AdminDashboard({
         shippingOutsideDhaka: outsideVal,
         announcements: profAnnouncements,
         announcementSpeed: profAnnouncementSpeed,
-        isAnnouncementEnabled: profIsAnnouncementEnabled
+        isAnnouncementEnabled: profIsAnnouncementEnabled,
+        heroBadgeTag: profHeroBadgeTag.trim() || '১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য',
+        heroTitle: profHeroTitle.trim(),
+        heroTitleHighlight: profHeroTitleHighlight.trim(),
+        heroSubtitle: profHeroSubtitle.trim()
       };
 
       if (onUpdateSettings) {
@@ -3200,6 +3214,125 @@ export default function AdminDashboard({
                     <div style={{ marginTop: '0.75rem', fontSize: '0.725rem', color: '#64748b', background: '#ecfdf5', padding: '6px 10px', borderRadius: '6px', borderLeft: '3px solid #059669' }}>
                       💡 <strong>সাইজ টিপস:</strong> <code>1200 × 600 px</code> বা <code>800 × 600 px</code> ল্যান্ডস্কেপ ইমেজ ব্যবহারে ব্যানার নিখুঁতভাবে ফিট হবে।
                     </div>
+                  </div>
+
+                </div>
+
+                {/* C. Hero Banner Text Content Controls */}
+                <div style={{ marginTop: '1.5rem', background: '#f8fafc', padding: '1.25rem', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                    <Sparkles size={18} color="#0d9488" />
+                    <h4 style={{ fontSize: '1rem', fontWeight: 800, color: '#0f172a', margin: 0 }}>
+                      গ. হিরো ব্যানার টেক্সট ও কন্টেন্ট সেটআপ (Hero Text Content)
+                    </h4>
+                  </div>
+                  <p style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '1rem' }}>
+                    হোমপেজের ব্যানার হেডিং, ব্যাজ ট্যাগ ও বিবরণী কাস্টমাইজ করুন।
+                  </p>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4" style={{ marginBottom: '1rem' }}>
+                    {/* Badge Tag Input */}
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label className="form-label" style={{ fontWeight: 700, fontSize: '0.85rem' }}>
+                        🏷️ হিরো ব্যাজ/ট্যাগ টেক্সট (Badge Tag) *
+                      </label>
+                      <input
+                        type="text"
+                        value={profHeroBadgeTag}
+                        onChange={(e) => setProfHeroBadgeTag(e.target.value)}
+                        className="form-input"
+                        placeholder="১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য"
+                      />
+                    </div>
+
+                    {/* Highlighted Title Input */}
+                    <div className="form-group" style={{ margin: 0 }}>
+                      <label className="form-label" style={{ fontWeight: 700, fontSize: '0.85rem' }}>
+                        ✨ শিরোনামের হাইলাইটেড টেক্সট (Highlighted Title) *
+                      </label>
+                      <input
+                        type="text"
+                        value={profHeroTitleHighlight}
+                        onChange={(e) => setProfHeroTitleHighlight(e.target.value)}
+                        className="form-input"
+                        placeholder="স্বাস্থ্যের নিখুঁত যত্ন"
+                        style={{ border: '1.5px solid #0d9488', background: '#f0fdfa' }}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Main Title Input */}
+                  <div className="form-group" style={{ marginBottom: '1rem' }}>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: '0.85rem' }}>
+                      📌 হিরো ব্যানার প্রধান শিরোনাম (Main Title Text) *
+                    </label>
+                    <input
+                      type="text"
+                      value={profHeroTitle}
+                      onChange={(e) => setProfHeroTitle(e.target.value)}
+                      className="form-input"
+                      placeholder="ঘরে বসেই রাখুন পরিবারের"
+                    />
+                  </div>
+
+                  {/* Subtitle Description Input */}
+                  <div className="form-group" style={{ marginBottom: '1.25rem' }}>
+                    <label className="form-label" style={{ fontWeight: 700, fontSize: '0.85rem' }}>
+                      📝 হিরো ব্যানার বিবরণী / সাবটাইটেল (Subtitle Description) *
+                    </label>
+                    <textarea
+                      value={profHeroSubtitle}
+                      onChange={(e) => setProfHeroSubtitle(e.target.value)}
+                      className="form-textarea"
+                      rows={3}
+                      placeholder="সুস্বাস্থ্য রক্ষায় সঠিক যত্নই একমাত্র সুরক্ষা..."
+                    />
+                  </div>
+
+                  {/* Live Interactive Hero Banner Text Preview */}
+                  <div style={{
+                    background: 'linear-gradient(135deg, #042f2e 0%, #0f766e 50%, #115e59 100%)',
+                    borderRadius: '16px',
+                    padding: '1.25rem',
+                    color: '#ffffff',
+                    boxShadow: '0 10px 25px rgba(15, 118, 110, 0.3)'
+                  }}>
+                    <div style={{ fontSize: '0.75rem', color: '#5eead4', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                      👁️ হিরো ব্যানার রিয়েল-টাইম প্রিভিউ (Live Text Preview)
+                    </div>
+
+                    {profHeroBadgeTag && (
+                      <div style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        background: 'rgba(255, 255, 255, 0.15)',
+                        backdropFilter: 'blur(8px)',
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '50px',
+                        fontSize: '0.75rem',
+                        fontWeight: 600,
+                        color: '#5eead4',
+                        marginBottom: '0.5rem',
+                        border: '1px solid rgba(94, 234, 212, 0.3)'
+                      }}>
+                        <Sparkles size={13} />
+                        <span>{profHeroBadgeTag}</span>
+                      </div>
+                    )}
+
+                    <h2 style={{ fontSize: '1.35rem', fontWeight: 800, lineHeight: 1.3, marginBottom: '0.5rem', color: '#ffffff' }}>
+                      {profHeroTitle && <>{profHeroTitle} <br /></>}
+                      {profHeroTitleHighlight && (
+                        <span style={{ color: '#5eead4', textDecoration: 'underline decoration-wavy decoration-amber-400' }}>
+                          {profHeroTitleHighlight}
+                        </span>
+                      )}
+                    </h2>
+
+                    <p style={{ fontSize: '0.85rem', color: '#ccfbf1', lineHeight: 1.5, margin: 0, maxWidth: '480px' }}>
+                      {profHeroSubtitle}
+                    </p>
                   </div>
 
                 </div>

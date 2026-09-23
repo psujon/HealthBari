@@ -70,7 +70,7 @@ export default function HealthTipsSection({ articles = [], products = [], onSele
                 {recommendedProduct && (
                   <div style={{ borderTop: '1px dashed #cbd5e1', paddingTop: '1rem' }}>
                     <div style={{ fontSize: '0.75rem', color: '#64748b', marginBottom: '4px' }}>
-                      প্রস্তাবিত মেডিকেল ডিভাইস:
+                      প্রস্তাবিত স্বাস্থ্য ও হারবাল পণ্য:
                     </div>
                     <div className="flex items-center justify-between gap-2">
                       <span style={{ fontWeight: 700, fontSize: '0.85rem', color: '#0f172a' }}>

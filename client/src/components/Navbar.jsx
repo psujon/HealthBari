@@ -23,7 +23,7 @@ export default function Navbar({
   const announcements = (settings?.announcements && Array.isArray(settings.announcements) && settings.announcements.length > 0)
     ? settings.announcements
     : [
-      "🩺 সকল মেডিকেল ডিভাইসে ২ বছরের অফিশিয়াল ওয়ারেন্টি ও সারাদেশে ক্যাশ অন ডেলিভারি",
+      "🩺 সকল অরিজিনাল স্বাস্থ্য, হারবাল ও মেডিকেল পণ্যে সারাদেশে ক্যাশ অন ডেলিভারি",
       "🎟️ বিশেষ ছাড়: 'HEALTH100' কুপন কোড ব্যবহার করে পান ১০০৳ নিশ্চিত ছাড়!",
       "🚚 কাশিমপুর (গাজীপুর) এরিয়াতে দ্রুততম হোম ডেলিভারি ও ফ্রি চেকআপ সুবিধা",
       "🎁 'HEALTH10' কোড ব্যবহারে পেয়ে যান যেকোনো অর্ডারে ১০% ইনস্ট্যান্ট ডিসকাউন্ট!",
@@ -164,7 +164,7 @@ export default function Navbar({
               className={`nav-link ${currentTab === 'products' ? 'active' : ''}`}
               style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.95rem' }}
             >
-              সকল হেলথ গ্যাজেট
+              সকল স্বাস্থ্য ও হারবাল পণ্য
             </button>
             <button
               onClick={() => setCurrentTab('track-parcel')}
@@ -279,7 +279,7 @@ export default function Navbar({
           <Search size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#0d9488' }} />
           <input
             type="text"
-            placeholder="পণ্য বা স্বাস্থ্য ডিভাইস খুঁজুন (বিপি মেশিন...)"
+            placeholder="পণ্য, হারবাল ফুড বা মেডিকেল ডিভাইস খুঁজুন..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="form-input"

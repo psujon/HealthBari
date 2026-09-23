@@ -62,7 +62,7 @@ export default function Footer({ onNavigate, settings }) {
               </li>
               <li>
                 <a href="#products" onClick={(e) => { e.preventDefault(); onNavigate('products'); }} style={{ color: '#475569', textDecoration: 'none' }}>
-                  সকল হেলথ গ্যাজেট
+                  সকল স্বাস্থ্য ও হারবাল পণ্য
                 </a>
               </li>
               <li>
@@ -215,7 +215,7 @@ export default function Footer({ onNavigate, settings }) {
             © 2026 HealthBari (হেলথ বাড়ি) . All rights reserved.
           </div>
           <div style={{ color: '#0f766e', fontWeight: 600 }}>
-            ১০০% নিরাপদ ও অরিজিনাল মেডিকেল ডিভাইস
+            ১০০% অরিজিনাল হেলথ, হারবাল ও মেডিকেল পণ্য
           </div>
         </div>
 
